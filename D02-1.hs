@@ -2,7 +2,13 @@ import Control.Monad
 import System.IO
 import Text.Read
 
-gi :: IO [(String, Int)] -> IO [(String, Int)]
+type InputItem = (String, Int)
+
+type Input = [InputItem]
+
+type Output = (Int, Int)
+
+gi :: IO Input -> IO Input
 gi s = do
   n <- getLine
   let [command, numStr] = words n
@@ -18,7 +24,7 @@ wrap :: a -> IO a
 wrap a = do
   return a
 
-getInput :: IO [(String, Int)]
+getInput :: IO Input
 getInput = do
   let w = wrap []
   gi w
@@ -28,16 +34,16 @@ main = do
   (x, y) <- solve $ getInput
   print $ x * y
 
-solve :: IO [(String, Int)] -> IO (Int, Int)
+solve :: IO Input -> IO Output
 solve wrapped = do
   nums <- wrapped
   let ans = pureSolve nums
   return ans
 
-pureSolve :: [(String, Int)] -> (Int, Int)
+pureSolve :: Input -> Output
 pureSolve cmds = f (0, 0) cmds
 
-f :: (Int, Int) -> [(String, Int)] -> (Int, Int)
+f :: (Int, Int) -> Input -> Output
 f cur [] = cur
 f cur@(x, y) ((cmd, num) : rest) = f nx rest
   where
